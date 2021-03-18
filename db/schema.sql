@@ -1,0 +1,3 @@
+-- department table with id and name
+-- role table with id title salary and department(fk to dept)
+-- employee with first and last role(fk to role) and manager(fk to manager employee (determined by role))
