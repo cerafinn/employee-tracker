@@ -1,4 +1,3 @@
-DROP DATABASE IF EXISTS employees;
 CREATE DATABASE employees;
 
 USE employees;
@@ -21,7 +20,7 @@ CREATE TABLE employee (
   first_name VARCHAR(30) UNIQUE NOT NULL,
   last_name VARCHAR(30) UNIQUE NOT NULL,
   role_id INTEGER NOT NULL,
-  CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE
+  CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE,
   manager_id INTEGER UNSIGNED,
   CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE
 );
