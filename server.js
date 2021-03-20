@@ -2,6 +2,40 @@ const inquirer = require("inquirer");
 const connection = require("./db/database");
 require("console.table");
 
+function mainPrompts() {
+  inquirer.prompt([
+    {
+      type: "list",
+      name: "choice",
+      message: "What do you wish to do?",
+      choices: [
+        {
+          name: "View All Departments"
+        },
+        {
+          name: "View All Roles"
+        },
+        {
+          name: "View All Employees"
+        },
+        {
+          name: "Add Department"
+        },
+        {
+          name: "Add Role"
+        },
+        {
+          name: "Add Employee"
+        },
+        {
+          name: "Update Employee Role"
+        }
+      ]
+    }
+    .then(res => {})
+  ])
+}
+
 // function that on start will give the options to : view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
 
 // function that on view all departments will present a formatted table showing department names and department ids when
@@ -17,3 +51,7 @@ require("console.table");
 // function that will on add an employee prompt user to enter the employee’s first name, last name, role, and manager and that employee is added to the database
 
 // function that will on update employee prompt user to to update and their new role and this information is updated in the database 
+
+function quit() {
+  console.log('Goodbye');
+}
