@@ -1,57 +1,106 @@
 const inquirer = require("inquirer");
-const connection = require("./db/database");
 require("console.table");
+const db = require('./db/database');
+
+
+initialize();
+
+function initialize() {
+  console.log('Welcome to the Employee Manager!')
+  mainPrompts()
+};
 
 function mainPrompts() {
-  inquirer.prompt([
-    {
-      type: "list",
-      name: "choice",
-      message: "What do you wish to do?",
-      choices: [
-        {
-          name: "View All Departments"
-        },
-        {
-          name: "View All Roles"
-        },
-        {
-          name: "View All Employees"
-        },
-        {
-          name: "Add Department"
-        },
-        {
-          name: "Add Role"
-        },
-        {
-          name: "Add Employee"
-        },
-        {
-          name: "Update Employee Role"
-        }
-      ]
-    }
-    .then(res => {})
-  ])
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "choice",
+        message: "What do you wish to do?",
+        choices: [
+          "View All Departments",
+          "View All Roles",
+          "View All Employees",
+          "Add A Department",
+          "Add A Role",
+          "Add An Employee",
+          "Update Employee Role",
+          "Exit",
+        ]
+      }
+    ])
+    .then(answer => {
+      let query = answer.choice;
+      switch (query) {
+        case "View All Departments":
+          allDepartments();
+          break;
+        case "View All Roles":
+          allRoles();
+          break;
+        case "View All Employees":
+          allEmployees();
+          break;
+        case "Add A Department":
+          addDepartment();
+          break;
+        case "Add A Role":
+          addRole();
+          break;
+        case "Add An Employee":
+          addEmployee();
+          break;
+        case "Update Employee Role":
+          updateEmployee();
+          break;
+        case "Exit":
+          exit();
+          break;
+
+        default:
+          break;
+      }
+    })
 }
 
-// function that on start will give the options to : view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
-
-// function that on view all departments will present a formatted table showing department names and department ids when
-
-// function that on view all roles will present the job title, role id, the department that role belongs to, and the salary for that role
-
-// function that on view all employees will present a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-
-// function that will on add a department prompt user to enter the name of the department and that department is added to the database
-
-// function that will on add a department prompt user to enter the name, salary, and department for the role and that role is added to the database
-
-// function that will on add an employee prompt user to enter the employee’s first name, last name, role, and manager and that employee is added to the database
-
-// function that will on update employee prompt user to to update and their new role and this information is updated in the database 
-
-function quit() {
+function exit() {
   console.log('Goodbye');
-}
+};
+
+function allDepartments() {
+  let sql = `SELECT * FROM department`;
+  db.query(sql, function(err, res) {
+    if(err) throw err;
+    console.table(res);
+    mainPrompts();
+  })
+};
+  
+function addDepartment() {
+  let sql = `INSERT INTO department `;
+  db.promise().query(sql, function(err, res) {
+    if(err) throw err;
+    console.log(res.length + ' departments:');
+    console.table(res);
+  })
+};
+
+function allRoles() {
+  let sql = `SELECT * FROM role`;
+};
+
+function addRole() {
+  let sql = `INSERT INTO role`
+};
+
+function allEmployees() {
+  let sql = `SELECT * FROM employee`
+};
+  
+function addEmployee() {
+  `INSERT INTO employee`
+};
+  
+function updateEmployee() {
+  `UPDATE employee.role to ? WHERE employee.id = ?`
+};
