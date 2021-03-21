@@ -91,11 +91,9 @@ function addDepartment() {
       db.promise().query(sql, department, function(err, res) {
         if(err) throw err;
         console.log(`New Department Added: ${department.name}`);
+        mainPrompts();
       })
     })
-    .then(
-      mainPrompts()
-    )
 };
 
 function allRoles() {
@@ -107,7 +105,12 @@ function allRoles() {
   })
 };
 
+
 function addRole() {
+  db.query(`SELECT department.name, department.id FROM department`, function(err, res) {
+    if (err) throw err;
+    let availableDepts = "something!";
+    // need to get name and id filtered out so that the value is what is inserted into the table rather than the name when entering a new role
 
   inquirer
     .prompt([
@@ -122,7 +125,8 @@ function addRole() {
       {
         name: "department",
         type: "list",
-        message: "What department is the new role under?"
+        message: "What department is the new role under?",
+        choices: availableDepts
       }
     ])
     .then(answer => {
@@ -131,11 +135,11 @@ function addRole() {
 
       db.promise().query(sql, role, function(err, res) {
         if(err) throw err;
+        console.log(`New Role Added: ${role.name}`);
+        mainPrompts()
       })
     })
-    .then(
-      mainPrompts()
-    )
+  })
 };
 
 function allEmployees() {
@@ -149,33 +153,43 @@ function allEmployees() {
 };
 
 function addEmployee() {
-  inquirer
-    .prompt([
-      {
-        name: "title",
-        message: "What is the title of the new role?"
-      },
-      {
-        name: "salary",
-        message: "What is the salary of the new role?"
-      },
-      {
-        name: "department",
-        type: "list",
-        message: "What department is the new role under?"
-      }
-    ])
-    .then(answer => {
-      const employee = answer;
-      const sql = "INSERT INTO employee SET ?";
+  db.query(`SELECT role.id, role.name FROM role`, function(err, res) {
+    if (err) throw err;
+    let availableRoles =
+    // same as with role, need an array for each role name in order to have the name selectable and the id the value that's entered in the field
 
-      db.promise().query(sql, employee, function(err, res) {
-        if(err) throw err;
+    inquirer
+      .prompt([
+        {
+          name: "first_name",
+          message: "What is the first name of the new employee?"
+        },
+        {
+          name: "last_name",
+          message: "What is the last name of the new employee?"
+        },
+        {
+          name: "role_id",
+          message: "What is the role of the new employee?"
+        },
+        {
+          name: "manager_id",
+          type: "list",
+          message: "",
+          // how do we ensure that we select a manager id that's entered in the DB?
+        }
+      ])
+      .then(answer => {
+        const employee = answer;
+        const sql = "INSERT INTO employee SET ?";
+
+        db.promise().query(sql, employee, function(err, res) {
+          if(err) throw err;
+          console.log(`New employee added!`)
+          mainPrompts()
+        })
       })
-    })
-    .then(
-      mainPrompts()
-    )
+  })
 };
 
 function updateEmployee() {
