@@ -155,8 +155,15 @@ function allEmployees() {
 function addEmployee() {
   db.query(`SELECT role.id, role.name FROM role`, function(err, res) {
     if (err) throw err;
-    let availableRoles =
-    // same as with role, need an array for each role name in order to have the name selectable and the id the value that's entered in the field
+    let availableRoles = "something";
+    return availableRoles
+  });
+
+  db.query(`SELECT CONCAT(employee.first_name, " ", employee.last_name) FROM employee`, function(err, res) {
+    if (err) throw err;
+    let availableManagers = "something";
+    return availableManagers
+  });
 
     inquirer
       .prompt([
@@ -169,13 +176,16 @@ function addEmployee() {
           message: "What is the last name of the new employee?"
         },
         {
+          type: "list",
           name: "role_id",
-          message: "What is the role of the new employee?"
+          message: "What is the role of the new employee?",
+          choices: availableRoles
         },
         {
           name: "manager_id",
           type: "list",
-          message: "",
+          message: "Who is the employee's manager?",
+          choices: null, availableManagers
           // how do we ensure that we select a manager id that's entered in the DB?
         }
       ])
@@ -189,7 +199,6 @@ function addEmployee() {
           mainPrompts()
         })
       })
-  })
 };
 
 function updateEmployee() {
