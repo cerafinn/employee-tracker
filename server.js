@@ -2,7 +2,6 @@ const inquirer = require("inquirer");
 require("console.table");
 const db = require('./db/database');
 
-
 initialize();
 
 function initialize() {
@@ -86,7 +85,12 @@ function addDepartment() {
 };
 
 function allRoles() {
-  let sql = `SELECT * FROM role`;
+  let sql = `SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department ON department_id = department.id`;
+  db.query(sql, function(err, res) {
+    if(err) throw err;
+    console.table(res);
+    mainPrompts();
+  })
 };
 
 function addRole() {
@@ -94,13 +98,19 @@ function addRole() {
 };
 
 function allEmployees() {
-  let sql = `SELECT * FROM employee`
+  let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, CONCAT(manager.first_name, " ", manager.last_name) AS manager
+            FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id`;
+  db.query(sql, function(err, res) {
+    if(err) throw err;
+    console.table(res);
+    mainPrompts();
+  })
 };
   
 function addEmployee() {
   `INSERT INTO employee`
 };
-  
+
 function updateEmployee() {
   `UPDATE employee.role to ? WHERE employee.id = ?`
 };
