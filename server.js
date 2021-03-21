@@ -5,7 +5,7 @@ const db = require('./db/database');
 initialize();
 
 function initialize() {
-  console.log('Welcome to the Employee Manager!')
+  console.log('Welcome to the Employee Manager!');
   mainPrompts()
 };
 
@@ -29,7 +29,7 @@ function mainPrompts() {
       }
     ])
     .then(answer => {
-      let query = answer.choice;
+      const query = answer.choice;
       switch (query) {
         case "View All Departments":
           allDepartments();
@@ -66,8 +66,9 @@ function exit() {
   console.log('Goodbye');
 };
 
+
 function allDepartments() {
-  let sql = `SELECT * FROM department`;
+  const sql = `SELECT * FROM department`;
   db.query(sql, function(err, res) {
     if(err) throw err;
     console.table(res);
@@ -76,16 +77,29 @@ function allDepartments() {
 };
   
 function addDepartment() {
-  let sql = `INSERT INTO department `;
-  db.promise().query(sql, function(err, res) {
-    if(err) throw err;
-    console.log(res.length + ' departments:');
-    console.table(res);
-  })
+  inquirer
+    .prompt([
+      {
+        name: "name",
+        message: "What is the name of the new department?"
+      }
+    ])
+    .then(answer => {
+      const department = answer;
+      const sql = "INSERT INTO department SET ?";
+
+      db.promise().query(sql, department, function(err, res) {
+        if(err) throw err;
+        console.log(`New Department Added: ${department.name}`);
+      })
+    })
+    .then(
+      mainPrompts()
+    )
 };
 
 function allRoles() {
-  let sql = `SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department ON department_id = department.id`;
+  const sql = `SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department ON department_id = department.id`;
   db.query(sql, function(err, res) {
     if(err) throw err;
     console.table(res);
@@ -94,11 +108,38 @@ function allRoles() {
 };
 
 function addRole() {
-  let sql = `INSERT INTO role`
+
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        message: "What is the title of the new role?"
+      },
+      {
+        name: "salary",
+        message: "What is the salary of the new role?"
+      },
+      {
+        name: "department",
+        type: "list",
+        message: "What department is the new role under?"
+      }
+    ])
+    .then(answer => {
+      const role = answer;
+      const sql = "INSERT INTO role SET ?";
+
+      db.promise().query(sql, role, function(err, res) {
+        if(err) throw err;
+      })
+    })
+    .then(
+      mainPrompts()
+    )
 };
 
 function allEmployees() {
-  let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, CONCAT(manager.first_name, " ", manager.last_name) AS manager
+  const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, CONCAT(manager.first_name, " ", manager.last_name) AS manager
             FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id`;
   db.query(sql, function(err, res) {
     if(err) throw err;
@@ -106,9 +147,35 @@ function allEmployees() {
     mainPrompts();
   })
 };
-  
+
 function addEmployee() {
-  `INSERT INTO employee`
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        message: "What is the title of the new role?"
+      },
+      {
+        name: "salary",
+        message: "What is the salary of the new role?"
+      },
+      {
+        name: "department",
+        type: "list",
+        message: "What department is the new role under?"
+      }
+    ])
+    .then(answer => {
+      const employee = answer;
+      const sql = "INSERT INTO employee SET ?";
+
+      db.promise().query(sql, employee, function(err, res) {
+        if(err) throw err;
+      })
+    })
+    .then(
+      mainPrompts()
+    )
 };
 
 function updateEmployee() {
