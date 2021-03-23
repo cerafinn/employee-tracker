@@ -1,5 +1,4 @@
 const inquirer = require("inquirer");
-const { listenerCount } = require("node:events");
 require("console.table");
 const db = require('./db/database');
 const { findAllDepartments, createRole, findAllRoles, findAllManagers } = require('./utils');
@@ -125,7 +124,7 @@ function addRole() {
       },
       {
         name: "salary",
-        message: "What is the salary of the new role?"
+        message: "What is the salary of the new role?",
       },
       {
         name: "department_id",
@@ -160,35 +159,36 @@ function addEmployee() {
       value: id
     }));
 
-    findAllManagers()
-    .then(([rows]) => {
-      let managers = rows;
-      const availableManagers = managers.map(({id, name}) => ({
-        name: name,
-        value: id
-      }));
-
     inquirer
       .prompt([
-          {
-            name: "first_name",
-            message: "What is the first name of the new employee?"
-          },
-          {
-            name: "last_name",
-            message: "What is the last name of the new employee?"
-          },
-          {
-            name: "role_id",
-            type: "list",
-            message: "What is the role of the new employee?",
-            choices: availableRoles
-          },
+        {
+          name: "first_name",
+          message: "What is the first name of the new employee?"
+        },
+        {
+          name: "last_name",
+          message: "What is the last name of the new employee?"
+        },
+        {
+          name: "role_id",
+          type: "list",
+          message: "What is the role of the new employee?",
+          choices: availableRoles
+        }
+
+        findAllManagers()
+          .then(([rows]) => {
+            let managers = rows;
+            const availableManagers = managers.map(({id, name}) => ({
+              name: name,
+              value: id
+            }));
+
           {
             name: "manager_id",
             type: "list",
             message: "Who is the employee's manager?",
-            choices: [{name: "No one", value: ""}, availableManagers]
+            choices: [{name: "No one", value: null}, availableManagers]
           }
       ])
       .then(answer => {
@@ -202,8 +202,8 @@ function addEmployee() {
           })
       });
     })
-  })
-};
+  }
+;
 
 function updateEmployeeRole() {
   findAllRoles()
@@ -220,7 +220,7 @@ function updateEmployeeRole() {
           name: "",
           type: "list",
           message: "Which employee's role are you changing?",
-          choices: 
+          choices: availableEmployees
         },
         {
           name: "role_id",
