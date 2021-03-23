@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
 require("console.table");
 const db = require('./db/database');
-const { findAllDepartments, createRole, findAllRoles, findAllEmployees, updateRole } = require('./utils');
+const { findAllDepartments, createRole, findAllRoles, findAllEmployees, updateRole, createEmployee } = require('./utils');
 
 initialize();
 
@@ -174,18 +174,22 @@ function addEmployee() {
           type: "list",
           message: "What is the role of the new employee?",
           choices: availableRoles
-        },
-// manager return is returning undefined when called before inquirer.
-// Issue is that two db calls at the beginning?
-// Try calling inside inquirer --> how to do this?
-        // findAllEmployees()
-        //   .then(([rows]) => {
-        //     let managers = rows;
-        //     const availableManagers = managers.map(({id, name}) => ({
-        //       name: name,
-        //       value: id
-        //     }));
+        }
+      ])
+      .then(answers => {
+        let first_name = answers.first_name;
+        let last_name = answers.last_name;
+        let role_id = answers.role_id;
 
+        findAllEmployees()
+          .then(([rows]) => {
+            let managers = rows;
+            const availableManagers = managers.map(({id, name}) => ({
+              name: name,
+              value: id
+            }));
+
+            inquirer.prompt([
           {
             name: "manager_id",
             type: "list",
@@ -193,19 +197,21 @@ function addEmployee() {
             choices: [{name: "No one", value: null}, availableManagers]
           }
       ])
-      .then(answer => {
-          const employee = answer;
-          const sql = "INSERT INTO employee SET ?";
-
-          db.promise().query(sql, employee, function(err, res) {
-            if(err) throw err;
-            console.log(`New employee added!`)
+      .then(answers => {
+          const manager_id = answers.manager_id;
+          const employee = {
+            first_name: first_name,
+            last_name: last_name,
+            role_id: role_id,
+            manager_id: manager_id
+          }
+          createEmployee(employee)
             mainPrompts()
           })
       });
     })
-  }
-;
+  })
+};
 
 function updateEmployeeRole() {
   findAllEmployees()
@@ -225,7 +231,6 @@ function updateEmployeeRole() {
         choices: availableEmployees
       },
     ])
-// call roles after calling employees, same issue as with add employee function
     .then(answers => {
           let employee_id = answers.employee_id;
         
