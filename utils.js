@@ -21,7 +21,7 @@ function createEmployee(newEmployee) {
 };
 
 function updateRole(role_id, employee_id) {
-  return db.promise().query(`UPDATE employee.role to ? WHERE employee.id = ?;`, [role_id, employee_id]);
+  return db.promise().query(`UPDATE employee SET role_id = ? WHERE id = ?;`, [role_id, employee_id]);
 };
 
 module.exports = { findAllDepartments, createRole, findAllRoles, createEmployee, findAllEmployees, updateRole }
