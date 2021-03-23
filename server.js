@@ -109,36 +109,40 @@ function allRoles() {
 function addRole() {
   db.query(`SELECT department.name, department.id FROM department`, function(err, res) {
     if (err) throw err;
-    let availableDepts = "something!";
+    let departments = [res];
+    let availableDepts = departments.map({id, name});
+
+    console.log(availableDepts);
+
     // need to get name and id filtered out so that the value is what is inserted into the table rather than the name when entering a new role
 
-  inquirer
-    .prompt([
-      {
-        name: "title",
-        message: "What is the title of the new role?"
-      },
-      {
-        name: "salary",
-        message: "What is the salary of the new role?"
-      },
-      {
-        name: "department",
-        type: "list",
-        message: "What department is the new role under?",
-        choices: availableDepts
-      }
-    ])
-    .then(answer => {
-      const role = answer;
-      const sql = "INSERT INTO role SET ?";
+  // inquirer
+  //   .prompt([
+  //     {
+  //       name: "title",
+  //       message: "What is the title of the new role?"
+  //     },
+  //     {
+  //       name: "salary",
+  //       message: "What is the salary of the new role?"
+  //     },
+  //     {
+  //       name: "department",
+  //       type: "list",
+  //       message: "What department is the new role under?",
+  //       choices: availableDepts
+  //     }
+  //   ])
+  //   .then(answer => {
+  //     const role = answer;
+  //     const sql = "INSERT INTO role SET ?";
 
-      db.promise().query(sql, role, function(err, res) {
-        if(err) throw err;
-        console.log(`New Role Added: ${role.name}`);
-        mainPrompts()
-      })
-    })
+  //     db.promise().query(sql, role, function(err, res) {
+  //       if(err) throw err;
+  //       console.log(`New Role Added: ${role.name}`);
+  //       mainPrompts()
+  //     })
+  //   })
   })
 };
 
@@ -185,8 +189,7 @@ function addEmployee() {
           name: "manager_id",
           type: "list",
           message: "Who is the employee's manager?",
-          choices: null, availableManagers
-          // how do we ensure that we select a manager id that's entered in the DB?
+          choices: [null, availableManagers]
         }
       ])
       .then(answer => {
