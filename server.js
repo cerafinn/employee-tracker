@@ -1,6 +1,8 @@
+const { createPromptModule } = require("inquirer");
 const inquirer = require("inquirer");
 require("console.table");
 const db = require('./db/database');
+const { findAllDepartments, createRole, findAllRoles, findAllManagers } = require('./index');
 
 initialize();
 
@@ -107,43 +109,36 @@ function allRoles() {
 
 
 function addRole() {
-  db.query(`SELECT department.name, department.id FROM department`, function(err, res) {
-    if (err) throw err;
-    let departments = [res];
-    let availableDepts = departments.map({id, name});
+  findAllDepartments()
+  .then(([rows]) => {
+    let departments = rows;
+    const availableDepts = departments.map(({id, name}) => ({
+      name: name,
+      value: id
+    }));
 
-    console.log(availableDepts);
-
-    // need to get name and id filtered out so that the value is what is inserted into the table rather than the name when entering a new role
-
-  // inquirer
-  //   .prompt([
-  //     {
-  //       name: "title",
-  //       message: "What is the title of the new role?"
-  //     },
-  //     {
-  //       name: "salary",
-  //       message: "What is the salary of the new role?"
-  //     },
-  //     {
-  //       name: "department",
-  //       type: "list",
-  //       message: "What department is the new role under?",
-  //       choices: availableDepts
-  //     }
-  //   ])
-  //   .then(answer => {
-  //     const role = answer;
-  //     const sql = "INSERT INTO role SET ?";
-
-  //     db.promise().query(sql, role, function(err, res) {
-  //       if(err) throw err;
-  //       console.log(`New Role Added: ${role.name}`);
-  //       mainPrompts()
-  //     })
-  //   })
-  })
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        message: "What is the title of the new role?"
+      },
+      {
+        name: "salary",
+        message: "What is the salary of the new role?"
+      },
+      {
+        name: "department_id",
+        type: "list",
+        message: "What department is the new role under?",
+        choices: availableDepts
+      }
+    ])
+    .then(answer => {
+      createRole(answer)
+      .then(() => mainPrompts())
+    })
+    })
 };
 
 function allEmployees() {
@@ -157,53 +152,59 @@ function allEmployees() {
 };
 
 function addEmployee() {
-  db.query(`SELECT role.id, role.name FROM role`, function(err, res) {
-    if (err) throw err;
-    let availableRoles = "something";
-    return availableRoles
-  });
+  findAllRoles()
+  .then(([rows]) => {
+    let roles = rows;
+    const availableRoles = roles.map(({id, title}) => ({
+      name: title,
+      value: id
+    }));
 
-  db.query(`SELECT CONCAT(employee.first_name, " ", employee.last_name) FROM employee`, function(err, res) {
-    if (err) throw err;
-    let availableManagers = "something";
-    return availableManagers
-  });
+    findAllManagers()
+    .then(([rows]) => {
+      let managers = rows;
+      const availableManagers = managers.map(({id, name}) => ({
+        name: name,
+        value: id
+      }));
 
     inquirer
       .prompt([
-        {
-          name: "first_name",
-          message: "What is the first name of the new employee?"
-        },
-        {
-          name: "last_name",
-          message: "What is the last name of the new employee?"
-        },
-        {
-          type: "list",
-          name: "role_id",
-          message: "What is the role of the new employee?",
-          choices: availableRoles
-        },
-        {
-          name: "manager_id",
-          type: "list",
-          message: "Who is the employee's manager?",
-          choices: [null, availableManagers]
-        }
+          {
+            name: "first_name",
+            message: "What is the first name of the new employee?"
+          },
+          {
+            name: "last_name",
+            message: "What is the last name of the new employee?"
+          },
+          {
+            name: "role_id",
+            type: "list",
+            message: "What is the role of the new employee?",
+            choices: availableRoles
+          },
+          {
+            name: "manager_id",
+            type: "list",
+            message: "Who is the employee's manager?",
+            choices: [{name: "No one", value: ""}, availableManagers]
+          }
       ])
       .then(answer => {
-        const employee = answer;
-        const sql = "INSERT INTO employee SET ?";
+          const employee = answer;
+          const sql = "INSERT INTO employee SET ?";
 
-        db.promise().query(sql, employee, function(err, res) {
-          if(err) throw err;
-          console.log(`New employee added!`)
-          mainPrompts()
-        })
-      })
+          db.promise().query(sql, employee, function(err, res) {
+            if(err) throw err;
+            console.log(`New employee added!`)
+            mainPrompts()
+          })
+      });
+    })
+  })
 };
 
-function updateEmployee() {
+function updateEmployeeRole() {
   `UPDATE employee.role to ? WHERE employee.id = ?`
 };
