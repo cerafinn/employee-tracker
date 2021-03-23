@@ -92,8 +92,8 @@ function addDepartment() {
       db.promise().query(sql, department, function(err, res) {
         if(err) throw err;
         console.log(`New Department Added: ${department.name}`);
-        mainPrompts();
       })
+      mainPrompts();
     })
 };
 

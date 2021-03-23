@@ -20,7 +20,7 @@ Table of Contents |
 In order to run the project locally, ensure that dependencies are installed by running:
 
 `npm install`
- 
+
 Then the user would need to launch their mysql within the command line through `mysql -u [username] -p` to initialize mysql. Once mysql is running in the command line, run `source db/schema.sql` and `source db/seed.sql` in order to create the database and enter data into the associated tables.
 
 <br />
@@ -31,7 +31,7 @@ The application works within the command line to allow users to view the existin
 
 You can find the deployed link and the repository link below:
 
-Deployed Link: [Deployed Link]()
+Video Walkthrough: [Video Link](https://drive.google.com/file/d/1eHjDKJHoUgBQFnM84PIJLrvnoGYGorOL/view?usp=sharing)
 
 Repo Link: [Repo Link](https://github.com/cerafinn/employee-tracker)
 
