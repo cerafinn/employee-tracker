@@ -1,20 +1,57 @@
-# employee-tracker
+# Employee Tracker
+
+## Description
+A command line application that allows for users to view and add to a database of existing employees.
 
 
-GIVEN a command-line application that accepts user input
-WHEN I start the application
-THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
-WHEN I choose to view all departments
-THEN I am presented with a formatted table showing department names and department ids
-WHEN I choose to view all roles
-THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
-WHEN I choose to view all employees
-THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-WHEN I choose to add a department
-THEN I am prompted to enter the name of the department and that department is added to the database
-WHEN I choose to add a role
-THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-WHEN I choose to add an employee
-THEN I am prompted to enter the employee’s first name, last name, role, and manager and that employee is added to the database
-WHEN I choose to update an employee role
-THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
+
+Table of Contents |
+-------------------|
+[Installation](#Installation)
+[Usage](#Usage)
+[Contributing](#Contributing)
+[Tests](#Tests)
+[Questions](#Questions)
+
+<br />
+
+## Installation
+
+In order to run the project locally, ensure that dependencies are installed by running:
+
+`npm install`
+ 
+Then the user would need to launch their mysql within the command line through `mysql -u [username] -p` to initialize mysql. Once mysql is running in the command line, run `source db/schema.sql` and `source db/seed.sql` in order to create the database and enter data into the associated tables.
+
+<br />
+
+## Usage
+
+The application works within the command line to allow users to view the existing departments, roles and employees, as well as adding departments, roles and employees as needed. The application utilitizes inquirer in order to generate the prompts that the user will interact with.
+
+You can find the deployed link and the repository link below:
+
+Deployed Link: [Deployed Link]()
+
+Repo Link: [Repo Link](https://github.com/cerafinn/employee-tracker)
+
+<br />
+
+## Contributing
+
+If interested in contributing to the project, feel free to reach out. Contact information can be found in the Questions section.
+
+<br />
+
+
+
+## Tests
+
+None
+
+<br />
+
+## Questions
+
+If you have any questions or issues, feel free to reach out through andaleeb.farooq@gmail.com.
+You can also find more of my work on Github at [github link](https://github.com/cerafinn)
