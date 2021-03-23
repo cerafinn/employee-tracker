@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
 require("console.table");
 const db = require('./db/database');
-const { findAllDepartments, createRole, findAllRoles, findAllEmployees } = require('./utils');
+const { findAllDepartments, createRole, findAllRoles, findAllEmployees, updateRole } = require('./utils');
 
 initialize();
 
@@ -174,17 +174,17 @@ function addEmployee() {
           type: "list",
           message: "What is the role of the new employee?",
           choices: availableRoles
-        }
+        },
 // manager return is returning undefined when called before inquirer.
 // Issue is that two db calls at the beginning?
 // Try calling inside inquirer --> how to do this?
-        findAllEmployees()
-          .then(([rows]) => {
-            let managers = rows;
-            const availableManagers = managers.map(({id, name}) => ({
-              name: name,
-              value: id
-            }));
+        // findAllEmployees()
+        //   .then(([rows]) => {
+        //     let managers = rows;
+        //     const availableManagers = managers.map(({id, name}) => ({
+        //       name: name,
+        //       value: id
+        //     }));
 
           {
             name: "manager_id",
@@ -210,37 +210,45 @@ function addEmployee() {
 function updateEmployeeRole() {
   findAllEmployees()
   .then(([rows]) => {
-    let roles = rows;
-    const availableEmployees = roles.map(({id, name}) => ({
+    let employees = rows;
+    const availableEmployees = employees.map(({id, name}) => ({
       name: name,
       value: id
     }));
     
-    inquirer
-      .prompt([
-        {
-          name: "",
-          type: "list",
-          message: "Which employee's role are you changing?",
-          choices: availableEmployees
-        },
+  inquirer
+    .prompt([
+      {
+        name: "employee_id",
+        type: "list",
+        message: "Which employee's role are you changing?",
+        choices: availableEmployees
+      },
+    ])
 // call roles after calling employees, same issue as with add employee function
-        findAllRoles()
+    .then(answers => {
+          let employee_id = answers.employee_id;
+        
+          findAllRoles()
         .then(([rows]) => {
           let roles = rows;
           const availableRoles = roles.map(({id, title}) => ({
             name: title,
             value: id
           }));
-        {
-          name: "role_id",
-          type: "list",
-          message: "What is the employee's new role?",
-          choices: availableRoles
-        }
-      ])
-      .then( answers => {
-        const sql = `UPDATE employee.role to ? WHERE employee.id = ?`;
+          inquirer.prompt([
+            {
+              name: "role_id",
+              type: "list",
+              message: "What is the employee's new role?",
+              choices: availableRoles
+            }
+          ])
+        .then( answers => {
+          let role_id = answers.role_id;
+          updateRole(role_id, employee_id);
+        })
       })
+    })
   })
 };
