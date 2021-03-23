@@ -12,7 +12,7 @@ function findAllRoles() {
   return db.promise().query(`SELECT role.title, role.id FROM role;`)
 };
 
-function findAllManagers() {
+function findAllEmployees() {
   return db.promise().query(`SELECT CONCAT(employee.first_name, " ", employee.last_name) AS name, employee.id FROM employee;`)
 };
 
@@ -20,8 +20,4 @@ function createEmployee(newEmployee) {
   return db.promise().query(`INSERT INTO employee SET ?;`, newEmployee)
 };
 
-function findAllEmployees() {
-  return db.promise().query(`SELECT role.title, role.id FROM role;`)
-};
-
-module.exports = { findAllDepartments, createRole, findAllRoles, findAllManagers, createEmployee, findAllEmployees }
+module.exports = { findAllDepartments, createRole, findAllRoles, createEmployee, findAllEmployees }

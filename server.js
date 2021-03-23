@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
 require("console.table");
 const db = require('./db/database');
-const { findAllDepartments, createRole, findAllRoles, findAllManagers } = require('./utils');
+const { findAllDepartments, createRole, findAllRoles, findAllEmployees } = require('./utils');
 
 initialize();
 
@@ -178,7 +178,7 @@ function addEmployee() {
 // manager return is returning undefined when called before inquirer.
 // Issue is that two db calls at the beginning?
 // Try calling inside inquirer --> how to do this?
-        findAllManagers()
+        findAllEmployees()
           .then(([rows]) => {
             let managers = rows;
             const availableManagers = managers.map(({id, name}) => ({
@@ -208,11 +208,11 @@ function addEmployee() {
 ;
 
 function updateEmployeeRole() {
-  findAllRoles()
+  findAllEmployees()
   .then(([rows]) => {
     let roles = rows;
-    const availableRoles = roles.map(({id, title}) => ({
-      name: title,
+    const availableEmployees = roles.map(({id, name}) => ({
+      name: name,
       value: id
     }));
     
@@ -224,6 +224,14 @@ function updateEmployeeRole() {
           message: "Which employee's role are you changing?",
           choices: availableEmployees
         },
+// call roles after calling employees, same issue as with add employee function
+        findAllRoles()
+        .then(([rows]) => {
+          let roles = rows;
+          const availableRoles = roles.map(({id, title}) => ({
+            name: title,
+            value: id
+          }));
         {
           name: "role_id",
           type: "list",
