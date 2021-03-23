@@ -20,4 +20,8 @@ function createEmployee(newEmployee) {
   return db.promise().query(`INSERT INTO employee SET ?;`, newEmployee)
 };
 
-module.exports = { findAllDepartments, createRole, findAllRoles, findAllManagers, createEmployee }
+function findAllEmployees() {
+  return db.promise().query(`SELECT role.title, role.id FROM role;`)
+};
+
+module.exports = { findAllDepartments, createRole, findAllRoles, findAllManagers, createEmployee, findAllEmployees }

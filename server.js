@@ -1,8 +1,8 @@
-const { createPromptModule } = require("inquirer");
 const inquirer = require("inquirer");
+const { listenerCount } = require("node:events");
 require("console.table");
 const db = require('./db/database');
-const { findAllDepartments, createRole, findAllRoles, findAllManagers } = require('./index');
+const { findAllDepartments, createRole, findAllRoles, findAllManagers } = require('./utils');
 
 initialize();
 
@@ -52,7 +52,7 @@ function mainPrompts() {
           addEmployee();
           break;
         case "Update Employee Role":
-          updateEmployee();
+          updateEmployeeRole();
           break;
         case "Exit":
           exit();
@@ -206,5 +206,31 @@ function addEmployee() {
 };
 
 function updateEmployeeRole() {
-  `UPDATE employee.role to ? WHERE employee.id = ?`
+  findAllRoles()
+  .then(([rows]) => {
+    let roles = rows;
+    const availableRoles = roles.map(({id, title}) => ({
+      name: title,
+      value: id
+    }));
+    
+    inquirer
+      .prompt([
+        {
+          name: "",
+          type: "list",
+          message: "Which employee's role are you changing?",
+          choices: 
+        },
+        {
+          name: "role_id",
+          type: "list",
+          message: "What is the employee's new role?",
+          choices: availableRoles
+        }
+      ])
+      .then( answers => {
+        const sql = `UPDATE employee.role to ? WHERE employee.id = ?`;
+      })
+  })
 };
