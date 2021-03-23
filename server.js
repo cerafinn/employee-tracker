@@ -189,12 +189,14 @@ function addEmployee() {
               value: id
             }));
 
+            availableManagers.push({name: "None", value: null})
+
             inquirer.prompt([
           {
             name: "manager_id",
             type: "list",
             message: "Who is the employee's manager?",
-            choices: [{name: "No one", value: null}, availableManagers]
+            choices: availableManagers
           }
       ])
       .then(answers => {
@@ -252,6 +254,7 @@ function updateEmployeeRole() {
         .then( answers => {
           let role_id = answers.role_id;
           updateRole(role_id, employee_id);
+          mainPrompts();
         })
       })
     })
