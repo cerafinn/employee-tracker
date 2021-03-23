@@ -175,7 +175,9 @@ function addEmployee() {
           message: "What is the role of the new employee?",
           choices: availableRoles
         }
-
+// manager return is returning undefined when called before inquirer.
+// Issue is that two db calls at the beginning?
+// Try calling inside inquirer --> how to do this?
         findAllManagers()
           .then(([rows]) => {
             let managers = rows;
